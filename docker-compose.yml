@@ -1,29 +1,33 @@
 services:
 
-    postgres:
+    postgres_dev:
         image: postgres:11
-        container_name: postgres
+        container_name: postgres_dev
         environment:
             - POSTGRES_USER=${DB_USER}
             - POSTGRES_PASSWORD=${DB_PASS}
             - POSTGRES_DB=${DB_NAME}
+        ports:
+            - "5433:5432"
         volumes:
           - /var/lib/postgresql/data
 
-    redis:
+    redis_dev:
         image: redis:7
-        container_name: redis
+        container_name: redis_dev
+        ports:
+            - "6380:6379"
 
     mock-readings:
         image: node:14.21.1
-        command: bash -c "npm install && node index.js"
         container_name: mock-readings
-        working_dir: /app/mock-readings
+        command: bash -c "npm install && node index.js"
+        working_dir: /app/xpd-mock-readings
         ports:
             - "8000:8000"
         volumes:
-            - ./mock-readings:/app/mock-readings
-            - /app/mock-readings/node_modules
+            - ./xpd-mock-readings:/app/xpd-mock-readings
+            - /app/xpd-mock-readings/node_modules
         # restart: always
 
     setup:
@@ -31,68 +35,48 @@ services:
             context: xpd-setup-api
         container_name: setup
         environment:
-            - DB_HOST=host.docker.internal
-            - DB_PORT=5432
-            - DB_NAME=xpd
-            - DB_USER=postgres
-            - DB_PASS=p@ssw0rd
+            - DB_USER=${DB_USER}
+            - DB_PASS=${DB_PASS}
+            - DB_NAME=${DB_NAME}
+            - DB_HOST=${DB_HOST}
+            - DB_PORT=${DB_PORT}
         ports:
             - "8080:8080"
 
+    operations:
+        image: node:18.14.0
+        container_name: operations
+        command: bash -c "npm install && npm run start:dev"
+        working_dir: /app/operations
+        environment:
+            - OPERATION_SERVER_PORT=${OPERATION_SERVER_PORT}
+            - SETUP_API_HOST=${SETUP_API_HOST}
+            - DB_HOST=${DB_HOST}
+            - DB_PORT=${DB_PORT}
+            - DB_NAME=${DB_NAME}
+            - DB_USER=${DB_USER}
+            - DB_PASS=${DB_PASS}
 
-    # setup-build:
-    #     image: maven:3-openjdk-8
-    #     command: mvn install
-    #     container_name: setup-build
-    #     working_dir: /app/setup-build
-    #     volumes:
-    #         - ./xpd-setup-api:/app/setup-build
-    #         - /root/.m2
+            - READINGS_MODE=${READINGS_MODE}
+            - LOCAL_SOCKET_READINGS_ACCESS_IP=${LOCAL_SOCKET_READINGS_ACCESS_IP}
+            - LOCAL_SOCKET_READINGS_PORT=${LOCAL_SOCKET_READINGS_PORT}
+            - WITS_SERVICE_READINGS_ACCESS_IP=${WITS_SERVICE_READINGS_ACCESS_IP}
+            - WITS_SERVICE_READINGS_PORT=${WITS_SERVICE_READINGS_PORT}
+            - LAN_SOCKET_READINGS_ACCESS_IP=${LAN_SOCKET_READINGS_ACCESS_IP}
+            - LAN_SOCKET_READINGS_PORT=${LAN_SOCKET_READINGS_PORT}
 
-    # setup:
-    #     image: tomcat:9-jdk8
-    #     container_name: setup
-    #     environment:
-    #         - DB_HOST=host.docker.internal
-    #         - DB_PORT=5432
-    #         - DB_NAME=xpd
-    #         - DB_USER=postgres
-    #         - DB_PASS=p@ssw0rd
-    #     ports:
-    #         - "8080:8080"
-    #     volumes:
-    #         - ./xpd-setup-api/target/xpd-setup-api.war:/usr/local/tomcat/webapps/xpd-setup-api.war
-    #     depends_on:
-    #         - setup-build
-    #     # restart: always
-
-    # operations:
-    #     image: node:18.14.0
-    #     command: bash -c "npm install && npm run start:dev"
-    #     container_name: operations
-    #     working_dir: /app/operations
-    #     environment:
-    #         - OPERATION_SERVER_PORT=8081
-    #         - SETUP_API_HOST=http://host.docker.internal:8080/xpd-setup-api/operation-resources
-    #         - DB_HOST=host.docker.internal
-    #         - DB_PORT=5432
-    #         - DB_NAME=xpd
-    #         - DB_USER=postgres
-    #         - DB_PASS=p@ssw0rd
-
-    #         - READINGS_MODE=101
-    #         - READINGS_ACCESS_HOST=http://mock-readings
-    #         - READINGS_ACCESS_PORT=8000
-
-    #         - ENABLE_MOCK_READINGS=true
-    #         - MOCK_READINGS_VARIATION=0.2
-    #         - MOCK_READINGS_START_ANYWHERE=true
-    #     ports:
-    #         - "8081:8081"
-    #     volumes:
-    #         - ./operation-server:/app/operations
-    #         - /app/operations/node_modules
-    #     # restart: always
+            # NEW FEATURE - Might not be available
+            - READINGS_ACCESS_HOST=${READINGS_ACCESS_HOST}
+            - READINGS_ACCESS_PORT=${READINGS_ACCESS_PORT}
+            - ENABLE_MOCK_READINGS=${ENABLE_MOCK_READINGS}
+            - MOCK_READINGS_VARIATION=${MOCK_READINGS_VARIATION}
+            - MOCK_READINGS_START_ANYWHERE=${MOCK_READINGS_START_ANYWHERE}
+        ports:
+            - "8081:8081"
+        volumes:
+            - ./operation-server:/app/operations
+            - /app/operations/node_modules
+        # restart: always
 
     # admin:
     #     image: node:14.21.1

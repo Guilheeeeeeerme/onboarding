@@ -15,3 +15,6 @@ operation-server-evc-in/
 operation-server-evc-out/
 
 .env
+
+XPD-Sample-xpd-*.tar
+XPD-Clean-xpd-*.tar
