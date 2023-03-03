@@ -1,22 +1,22 @@
-DB_HOST=postgres_dev
-DB_PORT=5432
+DB_HOST=host.docker.internal
+DB_PORT=5433
 DB_PASS=p@ssw0rd
 DB_USER=postgres
 DB_NAME=xpd
 
 OPERATION_SERVER_PORT=8081
-SETUP_API_HOST=http://setup:8080/xpd-setup-api/operation-resources
+SETUP_API_HOST=http://host.docker.internal:8080/xpd-setup-api/operation-resources
 READINGS_MODE=101
 
-LOCAL_SOCKET_READINGS_ACCESS_IP=http://mock-readings
+LOCAL_SOCKET_READINGS_ACCESS_IP=http://host.docker.internal
 LOCAL_SOCKET_READINGS_PORT=8000
-WITS_SERVICE_READINGS_ACCESS_IP=http://mock-readings
+WITS_SERVICE_READINGS_ACCESS_IP=http://host.docker.internal
 WITS_SERVICE_READINGS_PORT=8000
-LAN_SOCKET_READINGS_ACCESS_IP=http://mock-readings
+LAN_SOCKET_READINGS_ACCESS_IP=http://host.docker.internal
 LAN_SOCKET_READINGS_PORT=8000
 
 # NEW FEATURE - Might not be available
-READINGS_ACCESS_HOST=http://mock-readings
+READINGS_ACCESS_HOST=http://host.docker.internal
 READINGS_ACCESS_PORT=8000
 ENABLE_MOCK_READINGS=true
 MOCK_READINGS_VARIATION=0.2

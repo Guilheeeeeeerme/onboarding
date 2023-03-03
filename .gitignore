@@ -18,3 +18,4 @@ operation-server-evc-out/
 
 XPD-Sample-xpd-*.tar
 XPD-Clean-xpd-*.tar
+target/

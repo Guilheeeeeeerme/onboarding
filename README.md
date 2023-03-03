@@ -7,7 +7,7 @@
     * Some projects might not work with recent versions of NodeJS
 
 ## Step-by-step
-- Run `docker-compose up postgres_dev`. There should a postgres database running on port 5433
+- Run `docker-compose up postgres-dev`. There should a postgres database running on port 5433
     - The default credentials are on .envsample
 - Connect to the database using any tool - Dbeaver for example
 - Download *XPD-Sample-xpd-\*.tar* [from here](https://drive.google.com/drive/folders/1xg1xwXJIdIsZoiaFihu6Tk5CAhQktNM8)
