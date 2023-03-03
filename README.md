@@ -51,7 +51,7 @@
     - `http://localhost:9000/auth.html`
     - `http://localhost:8081/health`
 - When both works, we should be ready to go
-- Crendetials:
+- Crendentials:
     - admin
     - rzxtec123
 
