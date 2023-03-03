@@ -1,0 +1,17 @@
+operation-server/
+operation-server-evc/
+xpd-setup-api/
+xpd-mock-readings/
+xpd-bussiness-logic/
+wits-translator/
+wits-distributor/
+tela-driller/
+tela-admin/
+report-service-api/
+tela-driller-react/
+
+components-library/
+operation-server-evc-in/
+operation-server-evc-out/
+
+.env

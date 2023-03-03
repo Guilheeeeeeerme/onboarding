@@ -1,0 +1,119 @@
+services:
+
+    postgres:
+        image: postgres:11
+        container_name: postgres
+        environment:
+            - POSTGRES_USER=${DB_USER}
+            - POSTGRES_PASSWORD=${DB_PASS}
+            - POSTGRES_DB=${DB_NAME}
+        volumes:
+          - /var/lib/postgresql/data
+
+    redis:
+        image: redis:7
+        container_name: redis
+
+    mock-readings:
+        image: node:14.21.1
+        command: bash -c "npm install && node index.js"
+        container_name: mock-readings
+        working_dir: /app/mock-readings
+        ports:
+            - "8000:8000"
+        volumes:
+            - ./mock-readings:/app/mock-readings
+            - /app/mock-readings/node_modules
+        # restart: always
+
+    setup:
+        build:
+            context: xpd-setup-api
+        container_name: setup
+        environment:
+            - DB_HOST=host.docker.internal
+            - DB_PORT=5432
+            - DB_NAME=xpd
+            - DB_USER=postgres
+            - DB_PASS=p@ssw0rd
+        ports:
+            - "8080:8080"
+
+
+    # setup-build:
+    #     image: maven:3-openjdk-8
+    #     command: mvn install
+    #     container_name: setup-build
+    #     working_dir: /app/setup-build
+    #     volumes:
+    #         - ./xpd-setup-api:/app/setup-build
+    #         - /root/.m2
+
+    # setup:
+    #     image: tomcat:9-jdk8
+    #     container_name: setup
+    #     environment:
+    #         - DB_HOST=host.docker.internal
+    #         - DB_PORT=5432
+    #         - DB_NAME=xpd
+    #         - DB_USER=postgres
+    #         - DB_PASS=p@ssw0rd
+    #     ports:
+    #         - "8080:8080"
+    #     volumes:
+    #         - ./xpd-setup-api/target/xpd-setup-api.war:/usr/local/tomcat/webapps/xpd-setup-api.war
+    #     depends_on:
+    #         - setup-build
+    #     # restart: always
+
+    # operations:
+    #     image: node:18.14.0
+    #     command: bash -c "npm install && npm run start:dev"
+    #     container_name: operations
+    #     working_dir: /app/operations
+    #     environment:
+    #         - OPERATION_SERVER_PORT=8081
+    #         - SETUP_API_HOST=http://host.docker.internal:8080/xpd-setup-api/operation-resources
+    #         - DB_HOST=host.docker.internal
+    #         - DB_PORT=5432
+    #         - DB_NAME=xpd
+    #         - DB_USER=postgres
+    #         - DB_PASS=p@ssw0rd
+
+    #         - READINGS_MODE=101
+    #         - READINGS_ACCESS_HOST=http://mock-readings
+    #         - READINGS_ACCESS_PORT=8000
+
+    #         - ENABLE_MOCK_READINGS=true
+    #         - MOCK_READINGS_VARIATION=0.2
+    #         - MOCK_READINGS_START_ANYWHERE=true
+    #     ports:
+    #         - "8081:8081"
+    #     volumes:
+    #         - ./operation-server:/app/operations
+    #         - /app/operations/node_modules
+    #     # restart: always
+
+    # admin:
+    #     image: node:14.21.1
+    #     command: bash -c "npm install && npm start"
+    #     container_name: admin
+    #     working_dir: /app/admin
+    #     ports:
+    #         - "9000:9000"
+    #     volumes:
+    #         - ./tela-admin:/app/admin
+    #         - /app/admin/node_modules
+    #     # restart: always
+
+    # driller-react:
+    #     image: node:14.21.1
+    #     command: bash -c "npm install && npm start"
+    #     container_name: driller-react
+    #     working_dir: /app/driller-react
+    #     ports:
+    #         - "3000:3000"
+    #     volumes:
+    #         - ./tela-driller-react:/app/driller-react
+    #         - /app/driller-react/node_modules
+    #     # restart: always
