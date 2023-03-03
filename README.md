@@ -7,7 +7,7 @@
     * Some projects might not work with recent versions of NodeJS
 
 ## Step-by-step
-
+- Run `sh clone.sh` to clone all the projects
 - Run `cp .envsample .env`
     - This will create a env file that docker-compose will consume
 
