@@ -1,12 +1,11 @@
 
 volumes:
-  setup-target:
+  tomcat-webapps:
 
 services:
 
-    postgres-dev:
+    postgres:
         image: postgres:11
-        container_name: postgres-dev
         environment:
             - POSTGRES_USER=${DB_USER}
             - POSTGRES_PASSWORD=${DB_PASS}
@@ -16,9 +15,8 @@ services:
         volumes:
           - /var/lib/postgresql/data
 
-    redis-dev:
+    redis:
         image: redis:7
-        container_name: redis-dev
         ports:
             - "6380:6379"
 
@@ -37,11 +35,11 @@ services:
     setup-build:
         image: maven:3-openjdk-8
         container_name: setup-build
-        command: mvn install
+        command: bash -c "mvn install && mkdir -p /root/webapps && cp /app/xpd-setup-api/target/xpd-setup-api.war /root/webapps"
         working_dir: /app/xpd-setup-api
         volumes:
             - ./xpd-setup-api:/app/xpd-setup-api
-            - ./target:/app/xpd-setup-api/target
+            - tomcat-webapps:/root/webapps
             - /root/.m2
 
     setup:
@@ -56,9 +54,7 @@ services:
         ports:
             - "8080:8080"
         volumes:
-            - ./target/xpd-setup-api.war:/usr/local/tomcat/webapps/xpd-setup-api.war
-        depends_on:
-            - setup-build
+            - tomcat-webapps:/usr/local/tomcat/webapps
 
     operations:
         image: node:18.14.0
