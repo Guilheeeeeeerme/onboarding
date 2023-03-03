@@ -60,6 +60,3 @@
 
 ### Database Dumps
 https://drive.google.com/drive/folders/1xg1xwXJIdIsZoiaFihu6Tk5CAhQktNM8?usp=share_link
-
-### Readonly repo token
-rfQNLXdrRM87q-Zy2ajK
