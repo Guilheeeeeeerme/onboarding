@@ -48,9 +48,12 @@
 ### Running all remaining services
 - Run `docker-compose up`
 - Keep trying on the browser
-    - `http://localhost:9000/setup.html`
+    - `http://localhost:9000/auth.html`
     - `http://localhost:8081/health`
 - When both works, we should be ready to go
+- Crendetials:
+    - admin
+    - rzxtec123
 
 
 ## Resources
