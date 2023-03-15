@@ -77,6 +77,8 @@ services:
             - ENABLE_MOCK_READINGS=${ENABLE_MOCK_READINGS}
             - MOCK_READINGS_VARIATION=${MOCK_READINGS_VARIATION}
             - MOCK_READINGS_START_ANYWHERE=${MOCK_READINGS_START_ANYWHERE}
+
+            - WRITES_CONTEXT_TO=${WRITES_CONTEXT_TO}
         ports:
             - "8081:8081"
         volumes:
