@@ -96,7 +96,7 @@ services:
         volumes:
             - ./tela-admin:/app/admin
             - /app/admin/node_modules
-        restart: always
+        # restart: always
 
     driller-react:
         image: node:14.21.1
@@ -108,4 +108,4 @@ services:
         volumes:
             - ./tela-driller-react:/app/driller-react
             - /app/driller-react/node_modules
-        restart: always
+        # restart: always
