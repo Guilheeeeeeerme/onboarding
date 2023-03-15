@@ -3,9 +3,10 @@ volumes:
   tomcat-webapps:
 
 services:
-
+    
     postgres:
         image: postgres:11
+        container_name: onboarding-postgres
         environment:
             - POSTGRES_USER=${DB_USER}
             - POSTGRES_PASSWORD=${DB_PASS}
@@ -17,12 +18,14 @@ services:
 
     redis:
         image: redis:7
+        container_name: onboarding-redis
         ports:
             - "6380:6379"
+        # restart: always
 
     mock-readings:
         image: node:14.21.1
-        container_name: mock-readings
+        container_name: onboarding-mock-readings
         command: bash -c "npm install && node index.js"
         working_dir: /app/xpd-mock-readings
         ports:
@@ -32,19 +35,10 @@ services:
             - /app/xpd-mock-readings/node_modules
         # restart: always
 
-    setup-build:
-        image: maven:3-openjdk-8
-        container_name: setup-build
-        command: bash -c "mvn install && mkdir -p /root/webapps && cp /app/xpd-setup-api/target/xpd-setup-api.war /root/webapps"
-        working_dir: /app/xpd-setup-api
-        volumes:
-            - ./xpd-setup-api:/app/xpd-setup-api
-            - tomcat-webapps:/root/webapps
-            - /root/.m2
-
     setup:
-        image: tomcat:9-jdk8
-        container_name: setup
+        build:
+            context: xpd-setup-api
+        container_name: onboarding-setup
         environment:
             - DB_USER=${DB_USER}
             - DB_PASS=${DB_PASS}
@@ -53,12 +47,11 @@ services:
             - DB_PORT=${DB_PORT}
         ports:
             - "8080:8080"
-        volumes:
-            - tomcat-webapps:/usr/local/tomcat/webapps
+        # restart: always
 
     operations:
         image: node:18.14.0
-        container_name: operations
+        container_name: onboarding-operations
         command: bash -c "npm install && npm run start:dev"
         working_dir: /app/operations
         environment:
@@ -89,28 +82,28 @@ services:
         volumes:
             - ./operation-server:/app/operations
             - /app/operations/node_modules
-        restart: always
+        # restart: always
 
     admin:
         image: node:14.21.1
+        container_name: onboarding-admin
         command: bash -c "npm install && npm start"
-        container_name: admin
         working_dir: /app/admin
         ports:
             - "9000:9000"
         volumes:
             - ./tela-admin:/app/admin
             - /app/admin/node_modules
-        # restart: always
+        restart: always
 
     driller-react:
         image: node:14.21.1
+        container_name: onboarding-driller-react
         command: bash -c "npm install && npm start"
-        container_name: driller-react
         working_dir: /app/driller-react
         ports:
             - "3000:3000"
         volumes:
             - ./tela-driller-react:/app/driller-react
             - /app/driller-react/node_modules
-        # restart: always
+        restart: always
